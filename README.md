@@ -1,4 +1,4 @@
-# Redis Clone (Medis)
+# Redis Clone (Gedis)
 
 A lightweight, performant, in-memory key-value store clone of Redis built from scratch in C++. This project implements the Redis Serialization Protocol (RESP) and supports fundamental Redis commands, data structures, key expiration, and persistence.
 
