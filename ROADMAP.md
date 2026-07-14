@@ -31,12 +31,12 @@ graph TD
 
 ## 🚦 Current Status & Progress
 
-- **Current Milestone**: `Milestone 1: Project Initialization & Tech Stack Selection`
-- **Overall Progress**: 10% Complete
+- **Current Milestone**: `Milestone 3: RESP Parser Implementation`
+- **Overall Progress**: 25% Complete
 
 ### Milestone Progress Tracker
 - [x] **Milestone 1: Setup & Architecture Selection** (C++ chosen)
-- [ ] **Milestone 2: TCP Server & Basic Connection Loop**
+- [x] **Milestone 2: TCP Server & Basic Connection Loop**
 - [ ] **Milestone 3: RESP Parser Implementation**
 - [ ] **Milestone 4: Core In-Memory KV (GET, SET, DEL)**
 - [ ] **Milestone 5: Expiration & TTL (EX, PX, TTL, PTTL)**
@@ -54,9 +54,9 @@ graph TD
 - [ ] Write [Makefile](file:///Users/lakshyadhawan/Documents/projects/Redis_clone/Makefile) and structure the `/src` directory.
 
 ### Milestone 2: TCP Server (C++)
-- [ ] Create a TCP listener on port `6379`.
-- [ ] Implement client connection handling with concurrent processing.
-- [ ] Add basic logging for connections/disconnections.
+- [x] Create a TCP listener on port `6379`.
+- [x] Implement client connection handling with concurrent processing.
+- [x] Add basic logging for connections/disconnections.
 
 ### Milestone 3: RESP Parser (C++)
 - [ ] Support parsing incoming RESP types.
