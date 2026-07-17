@@ -31,14 +31,14 @@ graph TD
 
 ## 🚦 Current Status & Progress
 
-- **Current Milestone**: `Milestone 4: Core In-Memory KV (GET, SET, DEL)`
-- **Overall Progress**: 35% Complete
+- **Current Milestone**: `Milestone 5: Expiration & TTL (EX, PX, TTL, PTTL)`
+- **Overall Progress**: 50% Complete
 
 ### Milestone Progress Tracker
 - [x] **Milestone 1: Setup & Architecture Selection** (C++ chosen)
 - [x] **Milestone 2: TCP Server & Basic Connection Loop**
 - [x] **Milestone 3: RESP Parser Implementation**
-- [ ] **Milestone 4: Core In-Memory KV (GET, SET, DEL)**
+- [x] **Milestone 4: Core In-Memory KV (GET, SET, DEL)**
 - [ ] **Milestone 5: Expiration & TTL (EX, PX, TTL, PTTL)**
 - [ ] **Milestone 6: Additional Data Structures (Hashes, Lists)**
 - [ ] **Milestone 7: Persistence (AOF / Append-Only File)**
@@ -64,9 +64,9 @@ graph TD
 - [x] Write unit tests for the RESP tokenizer and deserializer.
 
 ### Milestone 4: Core In-Memory Key-Value Store
-- [ ] Implement thread-safe dictionary/map storage using `std::unordered_map` and standard thread synchronization (`std::shared_mutex` for read-heavy operations).
-- [ ] Support basic commands: `PING`, `ECHO`, `SET`, `GET`, `DEL`, `EXISTS`.
-- [ ] Ensure proper serialization of replies back to clients in RESP format.
+- [x] Implement thread-safe dictionary/map storage using `std::unordered_map` and standard thread synchronization (`std::shared_mutex` for read-heavy operations).
+- [x] Support basic commands: `PING`, `ECHO`, `SET`, `GET`, `DEL`, `EXISTS`.
+- [x] Ensure proper serialization of replies back to clients in RESP format.
 
 ### Milestone 5: Expiration & TTL (Time-To-Live)
 - [ ] Extend the `SET` command to support optional arguments `EX` (seconds) and `PX` (milliseconds).

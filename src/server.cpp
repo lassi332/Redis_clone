@@ -166,6 +166,60 @@ std::string Server::handle_command(const RespObject& command) {
             return make_error("ERR echo argument must be a bulk string").serialize();
         }
         return make_bulk_string(arg.str_val).serialize();
+    } else if (cmd_name == "SET") {
+        if (command.array_val.size() < 3) {
+            return make_error("ERR wrong number of arguments for 'set' command").serialize();
+        }
+        const auto& key_obj = command.array_val[1];
+        const auto& val_obj = command.array_val[2];
+        if (key_obj.type != RespType::BulkString || val_obj.type != RespType::BulkString) {
+            return make_error("ERR set arguments must be bulk strings").serialize();
+        }
+
+        store_.set(key_obj.str_val, val_obj.str_val);
+        return make_simple_string("OK").serialize();
+    } else if (cmd_name == "GET") {
+        if (command.array_val.size() < 2) {
+            return make_error("ERR wrong number of arguments for 'get' command").serialize();
+        }
+        const auto& key_obj = command.array_val[1];
+        if (key_obj.type != RespType::BulkString) {
+            return make_error("ERR get argument must be a bulk string").serialize();
+        }
+
+        std::string value;
+        if (store_.get(key_obj.str_val, value)) {
+            return make_bulk_string(value).serialize();
+        }
+        return make_null().serialize();
+    } else if (cmd_name == "DEL") {
+        if (command.array_val.size() < 2) {
+            return make_error("ERR wrong number of arguments for 'del' command").serialize();
+        }
+        long long deleted_count = 0;
+        for (size_t i = 1; i < command.array_val.size(); ++i) {
+            const auto& key_obj = command.array_val[i];
+            if (key_obj.type == RespType::BulkString) {
+                if (store_.del(key_obj.str_val)) {
+                    deleted_count++;
+                }
+            }
+        }
+        return make_integer(deleted_count).serialize();
+    } else if (cmd_name == "EXISTS") {
+        if (command.array_val.size() < 2) {
+            return make_error("ERR wrong number of arguments for 'exists' command").serialize();
+        }
+        long long exists_count = 0;
+        for (size_t i = 1; i < command.array_val.size(); ++i) {
+            const auto& key_obj = command.array_val[i];
+            if (key_obj.type == RespType::BulkString) {
+                if (store_.exists(key_obj.str_val)) {
+                    exists_count++;
+                }
+            }
+        }
+        return make_integer(exists_count).serialize();
     }
 
     return make_error("ERR unknown command '" + cmd_name_obj.str_val + "'").serialize();

@@ -6,6 +6,8 @@
 #include <thread>
 #include <mutex>
 
+#include "store.hpp"
+
 class Server {
 public:
     Server(const std::string& host, int port);
@@ -24,6 +26,7 @@ private:
     std::atomic<bool> is_running_;
     std::vector<std::thread> client_threads_;
     std::mutex threads_mutex_;
+    Store store_;
 
     // Handle an individual client connection
     void handle_client(int client_fd);
