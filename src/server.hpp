@@ -27,4 +27,7 @@ private:
 
     // Handle an individual client connection
     void handle_client(int client_fd);
+
+    // Process a parsed RESP command and return serialized response bytes
+    std::string handle_command(const struct RespObject& command);
 };

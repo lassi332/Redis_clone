@@ -1,5 +1,7 @@
 #include "server.hpp"
+#include "resp.hpp"
 #include <iostream>
+#include <algorithm>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -90,6 +92,8 @@ void Server::stop() {
 
 void Server::handle_client(int client_fd) {
     char buffer[1024];
+    std::string input_buffer;
+
     while (is_running_) {
         std::memset(buffer, 0, sizeof(buffer));
         ssize_t bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
@@ -102,11 +106,67 @@ void Server::handle_client(int client_fd) {
             break;
         }
 
-        std::cout << "[Server] Received raw command from socket " << client_fd << ": " << buffer;
+        // Append newly received bytes to the client stream buffer
+        input_buffer.append(buffer, bytes_read);
 
-        // Milestone 2 Dummy reply: echo back pong for now.
-        std::string reply = "+PONG\r\n";
-        send(client_fd, reply.c_str(), reply.length(), 0);
+        // Process all complete RESP commands in the buffer
+        while (true) {
+            auto [obj, consumed] = parse_resp(input_buffer);
+            if (consumed == 0) {
+                break; // Incomplete command, wait for more data
+            }
+
+            // Route the parsed command and get the response
+            std::string reply = handle_command(obj);
+            send(client_fd, reply.c_str(), reply.length(), 0);
+
+            // Erase processed bytes from buffer
+            input_buffer.erase(0, consumed);
+        }
     }
     close(client_fd);
+}
+
+std::string Server::handle_command(const RespObject& command) {
+    if (command.type != RespType::Array) {
+        return make_error("ERR Protocol error: expected array of commands").serialize();
+    }
+
+    if (command.array_val.empty()) {
+        return make_error("ERR Protocol error: empty command array").serialize();
+    }
+
+    // Extract command name (first element of array)
+    const auto& cmd_name_obj = command.array_val[0];
+    if (cmd_name_obj.type != RespType::BulkString) {
+        return make_error("ERR Protocol error: command name must be a bulk string").serialize();
+    }
+
+    // Convert command name to uppercase
+    std::string cmd_name = cmd_name_obj.str_val;
+    std::transform(cmd_name.begin(), cmd_name.end(), cmd_name.begin(), ::toupper);
+
+    if (cmd_name == "PING") {
+        // If PING has an argument, return it as a bulk string. Otherwise return simple string "+PONG\r\n".
+        if (command.array_val.size() > 1) {
+            const auto& arg = command.array_val[1];
+            if (arg.type == RespType::BulkString) {
+                return make_bulk_string(arg.str_val).serialize();
+            } else {
+                return make_bulk_string("").serialize();
+            }
+        }
+        return make_simple_string("PONG").serialize();
+    } else if (cmd_name == "ECHO") {
+        if (command.array_val.size() < 2) {
+            return make_error("ERR wrong number of arguments for 'echo' command").serialize();
+        }
+        const auto& arg = command.array_val[1];
+        if (arg.type != RespType::BulkString) {
+            return make_error("ERR echo argument must be a bulk string").serialize();
+        }
+        return make_bulk_string(arg.str_val).serialize();
+    }
+
+    return make_error("ERR unknown command '" + cmd_name_obj.str_val + "'").serialize();
 }

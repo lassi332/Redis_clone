@@ -31,13 +31,13 @@ graph TD
 
 ## 🚦 Current Status & Progress
 
-- **Current Milestone**: `Milestone 3: RESP Parser Implementation`
-- **Overall Progress**: 25% Complete
+- **Current Milestone**: `Milestone 4: Core In-Memory KV (GET, SET, DEL)`
+- **Overall Progress**: 35% Complete
 
 ### Milestone Progress Tracker
 - [x] **Milestone 1: Setup & Architecture Selection** (C++ chosen)
 - [x] **Milestone 2: TCP Server & Basic Connection Loop**
-- [ ] **Milestone 3: RESP Parser Implementation**
+- [x] **Milestone 3: RESP Parser Implementation**
 - [ ] **Milestone 4: Core In-Memory KV (GET, SET, DEL)**
 - [ ] **Milestone 5: Expiration & TTL (EX, PX, TTL, PTTL)**
 - [ ] **Milestone 6: Additional Data Structures (Hashes, Lists)**
@@ -59,9 +59,9 @@ graph TD
 - [x] Add basic logging for connections/disconnections.
 
 ### Milestone 3: RESP Parser (C++)
-- [ ] Support parsing incoming RESP types.
-- [ ] Handle partial reads and streaming inputs over TCP sockets.
-- [ ] Write unit tests for the RESP tokenizer and deserializer.
+- [x] Support parsing incoming RESP types.
+- [x] Handle partial reads and streaming inputs over TCP sockets.
+- [x] Write unit tests for the RESP tokenizer and deserializer.
 
 ### Milestone 4: Core In-Memory Key-Value Store
 - [ ] Implement thread-safe dictionary/map storage using `std::unordered_map` and standard thread synchronization (`std::shared_mutex` for read-heavy operations).
